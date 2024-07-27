@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org"
+      th:fragment="dynamic(main)">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    <link rel="stylesheet" href="/assets/css/index.css">
+    <!--    <link rel="stylesheet" href="/assets/css/index.css">-->
+    <link rel="stylesheet" href="/assets/css/detail.css">
+    <link rel="stylesheet" href="/assets/css/user.css">
+    <link rel="stylesheet" href="/assets/css/login.css">
+    <link rel="stylesheet"
+          href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
+          crossorigin="anonymous">
+    <link
+            href="https://cdn.jsdelivr.net/npm/simple-datatables@latest/dist/style.css"
+            rel="stylesheet"/>
+    <script src="https://use.fontawesome.com/releases/v6.1.0/js/all.js"
+            crossorigin="anonymous"></script>
+    <!--  Angular -->
+    <script
+            src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
+    <script
+            src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular-route.js"></script>
+    <title>QuocTaiNewspapers</title>
+    <link rel="shortcut icon" href=/assets/images/logo_for_head.png/>
+</head>
+
+<body class="container-fluid" ng-app="shopping-cart-app"
+      ng-controller="shopping-cart-ctrl">
+
+<nav class="col-sm-12">
+    <ul>
+        <li class="mb-lg-2"><a th:href="@{/}"><img class="imgHome"
+                                                   src="/assets/images/logo_for_head.png" alt=""></a></li>
+        <li>
+            <form th:action="@{/}" class="nav-search">
+                <input type="text" name="name" id="name" aria-describedby="helpId"
+                       placeholder=" Bạn tìm gì...">
+                <button>
+                    <i class="fa fa-search"></i>
+                </button>
+            </form>
+        </li>
+        <li>
+            <a th:href="@{/cart/view}" class="cart-i a mr-2">
+                <i class="fas fa-shopping-cart cart"></i>
+                <label class="num">{{cart.count}}</label></a>
+        </li>
+        <li th:block th:if="${#request.remoteUser}">
+            <a style="text-decoration: none;" th:href="@{/orderHistory/list}">
+                <i class="fa-solid fa-clock-rotate-left icon"></i>
+                <label th:text="#{nav.order_history}"></label>
+            </a>
+        </li>
+        <li class="nav-item  navbar-nav ms-auto ms-md-0 me-3 me-lg-4">
+            <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#"
+               role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                <i class="fa-solid fa-language icon"></i> <label th:text="#{nav.language}"></label>
+            </a>
+            <ul class="dropdown-menu dropdown">
+                <li><a class="dropdown-item" id="btn_search" href="?lang=en">English</a></li>
+                <li><a class="dropdown-item" id="btn_search" href="?lang=vi">Việt Nam</a></li>
+            </ul>
+        </li>
+
+        <li th:if="${#request.isUserInRole('DIRE') or #request.isUserInRole('STAF')}">
+            <a style="text-decoration: none;" th:href="@{/admin/accounts/list}">
+                <i class="fa-solid fa-lock-open icon"></i>
+                <label th:text="#{nav.admin}"></label></a>
+        </li>
+        <th:block th:unless="${#request.remoteUser}">
+            <li class="nav-item"><a class="nav-link item"
+                                    th:href="@{/security/login/form}">
+                <i class="fa-solid fa-earth-americas icon"></i>
+                <label th:text="#{nav.sign}"></label></a>
+            </li>
+        </th:block>
+        <th:block th:if="${#request.remoteUser}">
+            <li>
+                <div class="dropdown nav-item dropdown navbar-nav ms-auto ms-md-0 me-3 me-lg-4">
+                    <a class="nav-item a"
+                       data-toggle="dropdown" href=""><i class="fas fa-user fa-fw icon"></i>
+                        <label class="nav-item dropdown-toggle">[[${#request.remoteUser}]]</label>
+                    </a>
+                    <div class="dropdown-menu dropdown-menu-right">
+                        <a class="dropdown-item" id="btn_search" href="#!">
+                            <i class="fa-solid fa-gear"></i> [[#{nav.setting}]]</a>
+                        <a class="dropdown-item" id="btn_search" th:href="@{|/info/${#request.remoteUser}|}">
+                            <i class="fa-solid fa-circle-user"></i> [[#{nav.infoAcc}]]</a>
+                        <a class="dropdown-item" id="btn_search" th:href="@{/favorite}">
+                            <i class="fa-brands fa-gratipay"></i> [[#{nav.Favorite}]]</a>
+                        <a class="dropdown-item" id="btn_search" th:href="@{/forgot_password}">
+                            <i class="fa-solid fa-pen-nib"></i> [[#{nav.change_password}]]</a>
+                        <a class="dropdown-item" id="btn_search" th:href="@{|/user/feedback/${#request.remoteUser}|}">
+                            <i class="fa-solid fa-pen"></i> [[#{nav.Feedback}]]</a>
+                        <hr class="dropdown-divider" />
+                        <a class="dropdown-item"id="btn_search" th:href="@{/security/logoff}">
+                            <i class="fa-solid fa-power-off"></i> [[#{nav.sign_out}]]</a>
+                    </div>
+                </div>
+            </li>
+        </th:block>
+    </ul>
+</nav>
+<section class="menu-bar">
+    <div class="container">
+        <div class="menu-bar-content">
+            <ul>
+                <li><a href="/product/list?cid=1">
+
+                    <lable>Báo Trong nước</lable>
+                </a></li>
+                <li><a href="/product/list?cid=2">
+
+                    <lable>Báo Ngoài Ngành</lable>
+                </a></li>
+                <li><a href="/product/list?cid=3">
+
+                    <lable>Báo Tiếng Nước Ngoài</lable>
+                </a></li>
+                <li><a href="/product/list?cid=4">
+                    <lable>Tạp Chí Trong Nước</lable></a></li>
+                <li><a href="/product/list?cid=5">
+                    <lable>Tạp Chí Nước Ngoài</lable></a></li>
+
+            </ul>
+        </div>
+    </div>
+</section>
+
+
+
+
+<!--           main             -->
+<div class="row mt-4">
+    <div class="col">
+        <div th:replace="${main}"></div>
+    </div>
+</div>
+<hr>
+<hr>
+<footer class="ml-3">
+    <div>
+        <h2 class="ShopNow-footer-section__heading">
+				<span style="font-size: 12px"><span
+                        style="font-family: Roboto, sans-serif">
+                    <span style="color: #000000"><h2>Chính Sách Đổi Trả</h2></span>
+                    <span style="color: #000000"><b>1. Đổi trả theo nhu cầu khách hàng (đổi trả hàng vì không ưng ý)</b></span></span></span>
+        </h2>
+        <p class="ShopNow-footer-section__content">
+				<span style="font-size: 12px"><span
+                        style="font-family: Roboto, sans-serif"><span
+                        style="color: #000000">Tất cả mặt hàng đã mua đều có thể hoàn trả trong vòng 30 ngày kể từ ngày nhận hàng (trừ khi có quy định gì khác). Chúng tôi chỉ chấp nhận đổi trả cho các sản phẩm còn nguyên điều kiện ban đầu, còn hóa đơn mua hàng & sản phẩm chưa qua sử dụng, bao gồm:
+<br>
+                    <span> - Còn nguyên đóng gói và bao bì không bị móp rách</span>
+<br>
+                    <span>- Đầy đủ các chi tiết, phụ kiện</span>
+                    <br>
+                    <span>- Tem / phiếu bảo hành, tem thương hiệu, hướng dẫn kỹ thuật và các quà tặng kèm theo (nếu có) v.v… phải còn đầy đủ và nguyên vẹn</span>
+<br>
+                    <span>- Không bị dơ bẩn, trầy xước, hư hỏng, có mùi lạ hoặc có dấu hiệu đã qua qua sử dụng</span>
+                </span></span>
+        <hr>
+        <span style="font-size: 12px"><b>2. Đổi trả không vì lý do chủ quan từ khách hàng</b><br>
+            <span>2.1. Hàng giao không mới, không nguyên vẹn, sai nội dung hoặc bị thiếu</span><br>
+            <span>Chúng tôi khuyến khích quý khách hàng phải kiểm tra tình trạng bên ngoài của thùng hàng và sản phẩm trước khi thanh toán để đảm bảo rằng hàng hóa được giao đúng chủng loại, số lượng, màu sắc theo đơn đặt hàng và tình trạng bên ngoài không bị tác động.
+Nếu gặp trường hợp này, Quý khách vui lòng từ chối nhận hàng và/hoặc báo ngay cho bộ phận hỗ trợ khách hàng để chúng tôi có phương án xử lí kịp thời. (Xin lưu ý những bước kiểm tra sâu hơn như dùng thử sản phẩm chỉ có thể được chấp nhận sau khi đơn hàng được thanh toán đầy đủ).
+Trong trường hợp khách hàng đã thanh toán, nhận hàng và sau đó phát hiện hàng hóa không còn mới nguyên vẹn, sai nội dung hoặc thiếu hàng, xin vui lòng chụp ảnh sản phẩm gửi về hộp thư của chúng tôi để được chúng tôi hỗ trợ các bước tiếp theo như đổi/trả hàng hoặc gửi sản phẩm còn thiếu đến quý khách…
+                Sau 48h kể từ ngày quý khách nhận hàng, chúng tôi có quyền từ chối hỗ trợ cho những khiếu nại theo nội dung như trên.</span><br>
+            <span>2.2. Hàng giao bị lỗi</span><br>
+            <span>Khi quý khách gặp trục trặc với sản phẩm đặt mua của chúng tôi, vui lòng thực hiện các bước sau đây:</span><br>
+            <span>- Bước 1: Kiểm tra lại sự nguyên vẹn của sản phẩm, chụp lại ảnh sản phẩm xuất hiện lỗi</span><br>
+            <span>- Bước 2: Quý khách liên hệ với trung tâm chăm sóc khách hàng của chúng tôi để được xác nhận</span><br>
+            <span>- Bước 3: Trong vòng 30 ngày kể từ ngày nhận hàng, nếu quý khách được xác nhận từ trung tâm chăm sóc khách hàng rằng sản phẩm bị lỗi kỹ thuật, quý khách vui lòng</span>
+
+								</span>
+        <hr>
+        <span><h2>QuocTai Newspapers</h2><br>
+									<b>Thông tin liên lạc</b> <br>
+									Địa chỉ: 20 Đ.số 51, phường 14, quận Gò Vấp, TP.HCM <br>
+									Tổng đài: 0975xxxxxx <br>
+									Email: qtai307@gmail.com</span>
+        <hr>
+        <img>Theo dõi QuocTai Newspapers tại <a href="https://www.facebook.com/qtai0209"><img
+                            src="/assets/images/fb1.png"></a></h4>
+        </p>
+    </div>
+    <div style="float: right;" class="mb-3">Quốc Tài &copy;2022.All rights
+        reserved.
+    </div>
+
+</footer>
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+        crossorigin="anonymous"></script>
+<script
+        src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+        integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+        crossorigin="anonymous"></script>
+<script
+        src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+        crossorigin="anonymous"></script>
+<!-- Icon  -->
+<script src="/assets/js/all.min.js"></script>
+<script src="/assets/js/shopping-cart-app.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
+        crossorigin="anonymous"></script>
+<!-- slide-banner -->
+<script src="/assets/js/slide-banner.js"></script>
+<script src="/assets/js/index.js"></script>
+
+</body>
+
+</html>

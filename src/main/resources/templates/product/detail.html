@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{/layout/index :: dynamic(~{::main})}">
+
+<body>
+<main th:object="${item}" class="container-fluid">
+    <div class="category-title">
+        <div>[[#{detail.name}]]:</div>
+        <div class="category-name">[(*{category.name})].</div>
+    </div>
+    <div class="row">
+        <article class="col-sm-8">
+            <div class="row">
+                <div class="col-sm-4 img-detail mr-5">
+                    <img class="img-1" th:src="@{|/assets/images/*{image1}|}">
+
+                </div>
+                <div class="col-sm-7">
+                    <fieldset class="list_item_detail">
+                        <li>[[#{cart.name}]]: <label class="category-name">[(*{name})]</label></li>
+                        <li>[[#{cart.price}]]: <label class="price">[[*{#numbers.formatInteger(unitPrice, 0,
+                            'DEFAULT')}]] <sup>đ</sup></label></li>
+<!--                        <li><label class="old_price">[[*{#numbers.formatInteger(oldPrice, 0, 'DEFAULT')}]]-->
+<!--                            <sup>đ</sup></label></li>-->
+                        <li><label class="percent-oldProduct">Tiết kiệm [(*{discount})]%</label></li>
+                        <li><span class="badge badge-danger">[[#{detail.des}]] </li>
+                        <div class="discription">[(*{discription})]</div>
+                        <hr>
+                        <div class="form-group">
+                            <div class="bot mt-2">
+                                <button th:attr="ng-click=@{|cart.add(${item.productId})|}"
+                                        class="btn btn-success btn__confirm" id="btn_search">
+                                    <i class="fas fa-shopping-cart"></i> <a th:text="#{product.btn.cart}"></a>
+                                </button>
+                            </div>
+                        </div>
+                    </fieldset>
+                </div>
+            </div>
+
+
+        </article>
+        <aside class="col-sm-4">
+
+
+            <hr>
+            <h6><b>Ưu đãi khi thanh toán</b></h6>
+
+            <a class="a" th:href="@{/orderHistory/order/checkout}"
+               th:attr="ng-click=@{|cart.add(${item.productId})|}">
+                <div class="btn_buy_now">
+                    Mua ngay
+                </div>
+            </a>
+
+        </aside>
+    </div>
+
+    <!-- **************************************************************** -->
+    <h5>Phụ kiện thường mua cùng: <a class="link_all-item" th:href="@{|/product/list?cid=${item.category.categoryId}|}">(Xem tất cả sản phẩm)</a></h5>
+        <div class="row ml-2">
+            <div th:each="item: ${phukien}" class="col-sm-2">
+                <div class="card">
+                    <div class="card-body list-item">
+                        <div class="gif">
+                            <img th:src="@{|/assets/images/${item.hotSale}|}">
+                        </div>
+                        <a th:href="@{|/product/detail/${item.productId}|}">
+                            <img class="imgindex" th:src="@{|/assets/images/${item.image1}|}">
+                        </a>
+                    </div>
+                    <div class="card-footer">
+                        <a th:href="@{|/product/detail/${item.productId}|}" class="card-title">[(${item.name})]
+                            </a>
+                        <div class="card-bottom">
+                            <div>
+                                    <span class="price">[[${#numbers.formatInteger(item.unitPrice, 0,
+                                        'POINT')}]] <sup>đ</sup>
+                                    </span>
+                            </div>
+                            <div>
+                                    <span class="old_price">[[${#numbers.formatInteger(item.oldPrice, 0,
+                                        'POINT')}]] <sup>đ</sup>
+                                    </span>
+                                <span class="discount">- [[${item.discount}]]%</span>
+                            </div>
+                        </div>
+                        <div class="card-bot">
+                            <div>
+                                <img th:src="|/assets/images/${item.image5}|">
+                            </div>
+                            <div class="icon__cart-like">
+                                <a th:attr="ng-click=@{|cart.add(${item.productId})|}">
+                                    <i class="fa-solid fa-cart-shopping cart-shopping"></i></a>
+                                <a th:href="@{|/favorite/save/${item.productId}|}">
+                                    <i class="fa-regular fa-thumbs-up cart-shopping"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- ******************************** -->
+        <h5 class="mt-3"><b>Xem thêm sản phẩm cùng loại: </b></h5>
+        <div class="row mb-4 ml-2">
+            <div th:each="item: *{category.products}" class="col-sm-2">
+                <div class="card">
+                    <div class="card-body list-item">
+                        <div class="gif">
+                            <img th:src="@{|/assets/images/${item.hotSale}|}">
+                        </div>
+                        <a th:href="@{|/product/detail/${item.productId}|}">
+                            <img class="imgindex" th:src="@{|/assets/images/${item.image1}|}">
+                        </a>
+                    </div>
+                    <div class="card-footer">
+                        <a th:href="@{|/product/detail/${item.productId}|}" class="card-title">[(${item.name})]
+                            ]</a>
+                        <div class="card-bottom">
+                            <div>
+                                    <span class="price">[[${#numbers.formatInteger(item.unitPrice, 0,
+                                        'POINT')}]] <sup>đ</sup>
+                                    </span>
+                            </div>
+                            <div>
+                                    <span class="old_price">[[${#numbers.formatInteger(item.oldPrice, 0,
+                                        'POINT')}]] <sup>đ</sup>
+                                    </span>
+                                <span class="discount">- [[${item.discount}]]%</span>
+                            </div>
+                        </div>
+                        <div class="card-bot">
+                            <div>
+                                <img th:src="|/assets/images/${item.image5}|">
+                            </div>
+                            <div>
+                                <a th:attr="ng-click=@{|cart.add(${item.productId})|}">
+                                    <i class="fa-solid fa-cart-shopping cart-shopping"></i></a>
+                                <a th:href="@{|/favorite/save/${item.productId}|}">
+                                    <i class="fa-regular fa-thumbs-up cart-shopping"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <h5><b>Xem thêm các sản phẩm khác: </b></h5>
+        <div class="row ml-2">
+            <div th:each="item, itemIndex: ${items}" th:if="${itemIndex.index} &lt; 6" class="col-sm-2">
+                <div class="card">
+                    <div class="card-body list-item">
+                        <div class="gif">
+                            <img th:src="@{|/assets/images/${item.hotSale}|}">
+                        </div>
+                        <a th:href="@{|/product/detail/${item.productId}|}">
+                            <img class="imgindex" th:src="@{|/assets/images/${item.image1}|}">
+                        </a>
+                    </div>
+                    <div class="card-footer">
+                        <a th:href="@{|/product/detail/${item.productId}|}" class="card-title">[(${item.name})]
+                           </a>
+                        <div class="card-bottom">
+                            <div>
+                                    <span class="price">[[${#numbers.formatInteger(item.unitPrice, 0, 'POINT')}]]
+                                        <sup>đ</sup></span>
+                            </div>
+                            <div>
+                                    <span class="old_price">[[${#numbers.formatInteger(item.oldPrice, 0, 'POINT')}]]
+                                        <sup>đ</sup></span>
+                                <span class="discount">- [[${item.discount}]]%</span>
+                            </div>
+                        </div>
+                        <div class="card-bot">
+                            <div>
+                                <img th:src="|/assets/images/${item.image5}|">
+                            </div>
+                            <div class="icon__cart-like">
+                                <a th:attr="ng-click=@{|cart.add(${item.productId})|}">
+                                    <i class="fa-solid fa-cart-shopping cart-shopping"></i>
+                                </a>
+                                <a th:href="@{|/favorite/save/${item.productId}|}">
+                                    <i class="fa-regular fa-thumbs-up cart-shopping"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="text-center mt-4 mb-4">
+            <a th:href="@{|/|}" class="btn btn-success dropdown-toggle" id="btn_search">
+                Xem thêm [[${totalItemss} - ${totalItems} - 6]] sản phẩm</a>
+        </div>
+        <hr>
+        <!-- ******************************** -->
+        <div id="disqus_thread"></div>
+        <script>
+            window.addEventListener('message', receiveMessage, false);
+            function receiveMessage(event) {
+                if (event.data) {
+                    var msg;
+                    try {
+                        msg = JSON.parse(event.data);
+                    } catch (err) {
+                        // Do nothing
+                    }
+                    if (!msg) {
+                        return false;
+                    }
+                    if (msg.name === 'resize' || msg.name === 'rendered') {
+                        window.parent.postMessage({
+                            sentinel: 'amp',
+                            type: 'embed-size',
+                            height: msg.data.height
+                        }, '*');
+                    }
+                }
+            }
+        </script>
+<!--        <script async custom-element="amp-iframe" src="https://cdn.ampproject.org/v0/amp-iframe-0.1.js"></script>-->
+</main>
+</body>
+
+</html>
